@@ -8,9 +8,11 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		commands.Help()
-		return
+	if len(os.Args) >= 2 && os.Args[1] != "init" && os.Args[1] != "help" {
+		if !commands.IsRepoInitialized() {
+			fmt.Println("fatal: not a loki repository (or any of the parent directories): .loki")
+			return
+		}
 	}
 
 	switch os.Args[1] {
