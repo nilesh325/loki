@@ -19,16 +19,35 @@ A minimal, educational Git-style version control system written in Go. Loki demo
 
 1. **Clone or download this repository**
 2. **Build the CLI:**
+   
+   **On Linux/macOS:**
    ```sh
    go build -o loki ./cmd/loki
    ```
+
+   **On Windows (Command Prompt or PowerShell):**
+   ```bat
+   go build -o loki.exe cmd/loki/main.go
+   ```
+
 3. **Run commands:**
+   
+   **On Linux/macOS:**
    ```sh
    ./loki init
    ./loki add myfile.txt
    ./loki commit -m "first commit"
    ./loki status
    ./loki log
+   ```
+
+   **On Windows (Command Prompt or PowerShell):**
+   ```bat
+   .\loki init
+   .\loki add myfile.txt
+   .\loki commit -m "first commit"
+   .\loki status
+   .\loki log
    ```
 
 **Optional:**
