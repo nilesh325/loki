@@ -9,7 +9,7 @@ func Status() {
 	repo := core.OpenRepository()
 	files := repo.Status()
 	if( len(files) == 0 ) {
-		fmt.Println("nothing to commit")
+		fmt.Println("No files staged to commit")
 		return;
 	}
 	fmt.Println("Staged files:")
