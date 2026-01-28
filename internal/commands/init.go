@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func Init() {
@@ -17,5 +18,9 @@ func Init() {
 	}
 
 	_ = os.WriteFile(".loki/HEAD", []byte("ref: refs/main"), 0644)
-	fmt.Println("Initialized empty Loki repository")
+
+
+	cwd, _ := os.Getwd()
+	absPath, _ := filepath.Abs(cwd)
+	fmt.Printf("Initialized empty Loki repository at %s\n", absPath)
 }
