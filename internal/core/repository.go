@@ -16,8 +16,17 @@ type Repository struct {
 }
 
 func OpenRepository() *Repository {
+	cwd, err := os.Getwd()
+	if err != nil {
+		panic("Could not get current working directory")
+	}
+	repoRoot, ok := IsRepoInitialized(cwd + string(os.PathSeparator))
+	if !ok {
+		fmt.Fprintln(os.Stderr, "fatal: not a loki repository (or any of the parent directories)")
+		os.Exit(1)
+	}
 	return &Repository{
-		store: storage.NewFileStorage(".loki"),
+		store: storage.NewFileStorage(filepath.Join(repoRoot, ".loki")),
 		index: LoadIndex(),
 	}
 }
