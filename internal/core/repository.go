@@ -167,7 +167,7 @@ func (r *Repository) getLastCommitTree() *models.Tree {
 
 func (r *Repository) Commit(message string) string {
 	treeHash := r.index.WriteTree(r.store)
-	commitHash := r.store.WriteCommit(treeHash,message)
+	commitHash := r.store.WriteCommit(treeHash, message)
 	// Optionally update HEAD and log (not implemented here)
 	r.index.Clear()
 	return commitHash
@@ -178,17 +178,20 @@ func (r *Repository) Status() []FileStatus {
 }
 
 func (r *Repository) PrintLog() {
-	logs, err := os.ReadFile(filepath.Join(r.store.GiveRoot(),"commits.log"))
+	logs, err := os.ReadFile(filepath.Join(r.store.GiveRoot(), "commits.log"))
 	if err != nil {
 		fmt.Println("No commit found.")
 		return
 	}
-	lines :=strings.Split(string(logs),"\n")
-	for _, line:= range lines{
-		if(line==""){
+	lines := strings.Split(string(logs), "\n")
+	for _, line := range lines {
+		if line == "" {
 			continue
 		}
-		parts:=strings.SplitN(line," ",2)
-		fmt.Printf("%s %s\n",parts[0],parts[1])
-}
+		parts := strings.SplitN(line, " ", 2)
+		if len(parts) < 2 {
+			continue
+		}
+		fmt.Printf("%s %s\n", parts[0], parts[1])
+	}
 }
