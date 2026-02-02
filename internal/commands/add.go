@@ -58,4 +58,5 @@ func Add(files []string) {
 			utils.ColorText("nothing to stage", "warning"),
 		)
 	}
+	fmt.Println(utils.ColorText("Files added to staging area", "success"))
 }
