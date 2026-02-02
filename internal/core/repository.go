@@ -17,6 +17,11 @@ type Repository struct {
 	index *Index
 }
 
+func (r *Repository) Stat(path string) (os.FileInfo, error) {
+	return os.Stat(path)
+}
+
+
 func OpenRepository() *Repository {
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -56,11 +61,12 @@ func IsRepoInitialized(path string) (string, bool) {
 }
 
 // Detects and sets status: "new file", "modified", or "deleted"
-func (r *Repository) AddFile(path string) {
+func (r *Repository) AddFile(path string) error {
 	lastTree := r.getLastCommitTree()
 	var status string
 	fileInLast := false
 	var lastHash []byte
+
 	if lastTree != nil {
 		for _, entry := range lastTree.Entries {
 			if entry.Name == path {
@@ -70,32 +76,46 @@ func (r *Repository) AddFile(path string) {
 			}
 		}
 	}
-	_, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		if fileInLast {
-			status = "deleted"
+
+	info, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			if fileInLast {
+				status = "deleted"
+			} else {
+				return fmt.Errorf("file does not exist")
+			}
 		} else {
-			// File neither in last commit nor in working dir, skip
-			return
+			return err
 		}
 	} else {
+		if info.IsDir() {
+			return fmt.Errorf("path is a directory")
+		}
+
 		if !fileInLast {
 			status = "added"
 		} else {
-			// Compare content
-			data, _ := ioutil.ReadFile(path)
+			data, err := ioutil.ReadFile(path)
+			if err != nil {
+				return err
+			}
+
 			blob := &models.Blob{Content: data}
 			hash := r.store.WriteObject(blob.Serialize())
+
 			if !bytes.Equal(decodeHash(hash), lastHash) {
 				status = "modified"
 			} else {
-				// No change, skip
-				return
+				// unchanged → not an error
+				return nil
 			}
 		}
 	}
+
 	r.index.Add(path, status)
 	r.index.Save()
+	return nil
 }
 
 // Helper: get last commit's tree (if any)
