@@ -6,10 +6,10 @@ import (
 	"io/ioutil"
 	"loki/internal/models"
 	"loki/internal/storage"
+	"loki/internal/utils"
 	"os"
 	"path/filepath"
 	"strings"
-	"loki/internal/utils"
 )
 
 type Repository struct {
@@ -20,7 +20,6 @@ type Repository struct {
 func (r *Repository) Stat(path string) (os.FileInfo, error) {
 	return os.Stat(path)
 }
-
 
 func OpenRepository() *Repository {
 	cwd, err := os.Getwd()

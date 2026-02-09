@@ -21,7 +21,7 @@ func main() {
 	if os.Args[0] == "./loki" && os.Args[1] != "help" && os.Args[1] != "init" {
 		_, check := core.IsRepoInitialized(absPath)
 		if !check {
-			fmt.Println(utils.ColorText("fatal:"+cwd+" not a loki repository (or any of the parent directories)", "error"))
+			fmt.Println(utils.ColorText("fatal:", "error") + utils.ColorText(string(cwd), "notice") + utils.ColorText(" not a loki repository \n(or any of the parent directories)", "error"))
 			return
 		}
 	}
@@ -39,6 +39,8 @@ func main() {
 		commands.Log()
 	case "help":
 		commands.Help()
+	case "config":
+		commands.Config(os.Args[2:])
 	default:
 		fmt.Println("Unknown command:", os.Args[1])
 		commands.Help()
